@@ -1,0 +1,64 @@
+﻿@using demo.sinch.com.Code
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @RenderSection("description", false)
+    @RenderSection("author", false)
+
+    <title>@ViewBag.Title</title>
+    <meta name="description" content="@ViewBag.Description"/>
+    <meta name="author" content="Sinch"/>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+
+</head>
+<body>
+<div class="navbar navbar-fixed-top navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="~/" class="navbar-brand">
+                <img src="https://www.sinch.com/wp-content/themes/sinch/img/sinch-logo-white.svg" style="height: 50px; padding-bottom: 15px; width: 105px;"/>
+            </a>
+
+        </div>
+        <div class="navbar-collapse collapse navbar-responsive-collapse">
+            <ul class="nav navbar-nav">
+                <li class="@Html.IsSelected(actions: "JoinConference", controllers: "Conference")">
+                    @Html.ActionLink("Join a conference", "JoinConference", "Conference", new {area = ""}, null)
+                </li>
+                @if (Request.IsAuthenticated)
+                {
+                    <li class="@Html.IsSelected(actions: "Create", controllers: "Conference")">@Html.ActionLink("Create conference", "Create", "Conference", new {area = ""}, null)</li>
+                    <li class="@Html.IsSelected(actions: "MyConferences", controllers: "Conference")">@Html.ActionLink("My Conferences", "MyConferences", "Conference", new {area = ""}, null)</li>
+                }
+
+            </ul>
+            @Html.Partial("_LoginPartial")
+        </div>
+
+    </div>
+</div>
+<div class="clear-fix" style="padding-top: 70px;">
+    <div class="container-fluid body-content">
+        @RenderBody()
+    </div>
+</div>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+
+@RenderSection("scripts", false)
+<script>
+    $(function() {
+        $.material.init();
+    });
+</script>
+</body>
+</html>

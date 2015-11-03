@@ -1,0 +1,74 @@
+﻿@model demo.sinch.com.Models.CreateConferenceModel
+
+@{
+    ViewBag.Title = "Create a conference";
+}
+<div id="startbg" class="bg">
+
+</div>
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 well well-lg sinch-push-top">
+        <div class="lead">Create a New Conference</div>
+        <div class="lead ">PIN: <span class="sinchpurple">@Model.Conference.PinCode</span></div>
+        @using (Html.BeginForm("Create", "Conference", FormMethod.Post, new { Class = "form-inline" })) {
+            @Html.HiddenFor(m => m.Conference.PinCode)
+            <div class="form-group-material-deep-purple-300">
+                <input type="text" class="form-control floating-label input-lg" id="Conference.ConferenceName" name="Conference.ConferenceName"
+                       placeholder="Conference name" /><br />
+            </div>
+            <div class="form-group-material-deep-purple-300">
+                <label>
+                    Conference will expire on:<br />
+                    @Html.EditorFor(m => m.Conference.ConferenceEndDate)
+                </label>
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBoxFor(m => m.Conference.ValidForever) No expiration
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group-material-deep-purple-300 ">
+                <p></p>
+                @*<h2>Invite people</h2>
+                    <table>
+                        <tr>
+                            <td>Name</td>
+                            <td>Email</td>
+                            <td>Phone</td>
+                        </tr>
+
+                        @for (int i = 0; i < Model.Participants.Count; i++) {
+
+                            <tr>
+                                <td>@Html.TextBoxFor(p => p.Participants[i].Name)</td>
+                                <td>@Html.TextBoxFor(p => p.Participants[i].Email)</td>
+                                <td>@Html.TextBoxFor(p => p.Participants[i].Phone)</td>
+                            </tr>
+                        }
+                    </table>*@
+
+                <input class="btn btn-material-deep-purple-400 btn-raised" type="submit" value="Create" />
+            </div>
+        }
+    </div>
+
+</div>
+
+
+@section scripts
+{
+    <script>
+        $(':text').addClass('form-control input-lg');
+        $('textarea').addClass('form-control input-lg');
+        $('textarea').style("width:100%");
+
+    </script>
+    @*<link href="~/Content/datepicker.css" rel="stylesheet">
+        <script src="~/Scripts/bootstrap-datepicker.js"></script>
+        <script>
+            $('#ConferenceEndDate').datepicker({
+                format: 'mm-dd-yyyy hh:mm'
+            });
+        </script>*@
+}

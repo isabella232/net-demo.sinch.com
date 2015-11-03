@@ -1,0 +1,55 @@
+﻿@model demo.sinch.com.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Log in";
+}
+<div id="startbg" class="bg">
+
+</div>
+
+<div class="row">
+    <div class="well well-lg sinch-vertical-center">
+        <div class="lead">@ViewBag.Title</div>
+
+        <form method="POST" action="@Url.Action("Login")" class="form-horizontal">
+            @Html.AntiForgeryToken()
+            <div class="form-group-material-deep-purple-300">
+                @Html.ValidationSummary(true)
+                <input type="text" class="form-control floating-label input-lg" id="UserName" name="UserName"
+                       placeholder="Username"/>
+                <input type="password" class="form-control floating-label input-lg" id="Password" name="Password"
+                       placeholder="password"/>
+                <div class="checkbox checkbox-inline">
+                    <label>
+                        @Html.CheckBoxFor(m => m.RememberMe) Remember me
+                    </label>
+                </div>
+
+            </div>
+            <div class="form-group-material-deep-purple-300 text-center">
+                <input type="submit" value="Log in" class="btn btn-material-deep-purple-400 btn-raised"/><br/>
+                <button id="forgotPass" class="btn btn-fab-info">Forgot password</button>
+            </div>
+        </form>
+
+        <div>
+            Dont have an account and want one? @Html.ActionLink("Register", "Register") <br/>
+            You dont need an account to join a conference, just join @Html.ActionLink("here", "JoinConference", "Conference")
+        </div>
+    </div>
+
+</div>
+@section Scripts {
+
+    <script>
+        $(':text').addClass('form-control input-lg');
+        $('textarea').addClass('form-control input-lg');
+        $('#forgotPass').bind('click', function(event) {
+            event.preventDefault();
+            $.getJSON('@Url.Action("ForgotPassword")', { email: $('#UserName').val() }, function(data) {
+                console.log('sent');
+            });
+        });
+
+    </script>
+}

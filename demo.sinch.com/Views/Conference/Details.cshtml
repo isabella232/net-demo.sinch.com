@@ -1,0 +1,59 @@
+﻿@model demo.sinch.com.Models.ConferenceDetailsViewModel
+
+@{
+    ViewBag.Title = Model.Conference.ConferenceName;
+}
+<div id="startbg" class="bg">
+
+</div>
+<div class="row ">
+    <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 well well-lg sinch-push-top">
+        <div class="lead">@Model.Conference.ConferenceName</div>
+        Pin: @Model.Conference.PinCode<br />
+        Conferenceid: @Model.Conference.ConferenceId<br />
+
+        @(Model.Conference.ValidForever ? "Valid forever" : Model.Conference.ConferenceEndDate.ToString())<br />
+        <ul id="Atendees">
+            @if (Model.Participants != null) {
+                foreach (var par in Model.Participants) {
+                    <li>
+                        @par.Cli
+                    </li>
+                }
+            }
+        </ul>
+        <form action="@Url.Action("Delete")">
+            <input type="hidden" name="id" value="@Model.Conference.ConferenceId" />
+            <button type="submit" id="deleteConference" class="btn btn-raised btn-material-red">Delete conference</button>
+        </form>
+        <form class="form-inline">
+            <h3>Add a participant</h3>
+            <div class="form-group-material-deep-purple-300">
+                <div class="col-md-10">
+                    <input type="text" class="form-control floating-label input-lg" id="number" name="number"
+                           placeholder="Number to dial in" />
+                </div>
+                <div class="col-md-2">
+                    <button id="callout" class="btn btn-fab btn-raised btn-material-green">
+                        <i class="mdi-communication-call-merge"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+@section scripts
+{
+    <script>
+
+        $('#callout').bind('click', function(event) {
+            event.preventDefault();
+            $.getJSON('CallOut?number=' + $('#number').val() + '&conferenceId=@Model.Conference.ConferenceId', null, function(data) {
+                //todo, add to list of participants
+            });
+        });
+
+
+    </script>
+}

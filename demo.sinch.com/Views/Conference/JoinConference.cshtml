@@ -1,0 +1,242 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Connect to a Conference Call | Sinch Conference Calling";
+    ViewBag.Description = "Connect to a Sinch Conference Call. Join via the app or call in from your own phone.";
+}
+<div id="bg" class="bg loginBg">
+</div>
+<div class="row">
+    <div class="well well-lg sinch-vertical-center">
+        <div class="lead text-center">Join a conference</div>
+        <p>
+            Enter your name and the PIN you got in your invitation
+        </p>
+        <form id="newCall" class="form-horizontal" autocomplete="off">
+            <div class="form-group-material-deep-purple-300">
+                <input type="text" class="form-control floating-label input-lg " id="userName" name="userName"
+                       placeholder="E-mail or name" data-placement="right" title="Email or name" /><br />
+                <input type="text" class="form-control floating-label input-lg" id="pinCode" name="pinCode"
+                       placeholder="Conference pin:" /><br />
+            </div>
+            <div id="participants">
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group text-center">
+                <button class="btn btn-material-deep-purple-400 btn-raised" id="call">Join conference</button>
+                <p>
+                    <div class="text-danger" id="errormessage"></div>
+                    <div class="lead">
+                        Or call (415) 854-4909 to join.<br />
+                    </div>
+                    <a href="" data-toggle="modal" data-target="#complete-dialog">more numbers</a>
+                </p>
+            </div>
+
+        </form>
+
+        <div id="incall" style="display: none">
+            <div class="col-md-12">
+                <div class="lead text-center" id="timer">00:00:00</div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-12 btn-toolbar text-center">
+                <button id="hangup" class="btn btn-fab btn-raised btn-material-red ">
+                    <i class="mdi-communication-call-end"></i>
+                </button>&nbsp;&nbsp;
+                <button id="mute" class="btn btn-fab btn-raised btn-material-grey">
+                    <i id="micicon" class="mdi-av-mic"></i>
+                </button>
+            </div>
+        </div>
+        <audio id="incoming" autoplay></audio>
+        <audio id="ringback" src="~/content/ringback.wav" loop></audio>
+        <audio id="ringtone" src="~/content/phone_ring.wav" loop></audio>
+    </div>
+</div>
+
+<div class="row">
+    <button class="btn btn-material-deep-purple-400 btn-raised" type="button" data-toggle="collapse" data-target="#logContainer" aria-expanded="false" aria-controls="logContainer"
+            style="bottom: 20px; position: absolute;">
+        Show Log
+    </button>
+    <div class="collapse" id="logContainer">
+        <div class="col-sm-10 col-sm-offset-1 well well-lg" style="bottom: 70px; height: 100px; overflow-x: hidden; overflow-y: auto; position: absolute;">
+            <div id="callLog">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="complete-dialog" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Conference numbers</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Sweden: 010 100 99 14<br />
+                    Florida: (786) 408 8194
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+
+    <script src="~/Scripts/sinch.min.js"></script>
+    <script>
+        $('[data-toggle="tooltip"]').tooltip();
+
+        var sinchClient = new SinchClient({
+            applicationKey: '@ViewBag.applicationKey',
+            capabilities: { calling: true },
+            startActiveConnection: false, //we dont need to recieve calls
+            onLogMessage: function (message) {
+                console.log(message);
+            }
+        });
+        var callClient = sinchClient.getCallClient();
+        var call;
+        var started = false;
+        var connectionId;
+        var muted = false;
+        var callListeners = {
+            onCallProgressing: function (call) {
+                $('audio#ringback').prop("currentTime", 0);
+                $('audio#ringback').trigger("play");
+                $('div#callLog').prepend('<div id="stats">Ringing...</div>');
+            },
+            onCallEstablished: function (call) {
+                timer();
+                $('audio#incoming').attr('src', call.incomingStreamURL);
+                $('audio#ringback').trigger("pause");
+                $('audio#ringtone').trigger("pause");
+                showUI(true);
+                //Report call stats
+                var callDetails = call.getDetails();
+                $('div#callLog').prepend('<div id="stats">Answered at: ' + (callDetails.establishedTime) + '</div>');
+            },
+            onCallEnded: function (call) {
+                $('audio#ringback').trigger("pause");
+                $('audio#ringtone').trigger("pause");
+                $('audio#incoming').attr('src', '');
+                showUI(false);
+                //Report call stats
+                var callDetails = call.getDetails();
+                $('div#callLog').prepend('<div id="stats">Ended: ' + callDetails.endedTime + '</div>');
+                $('div#callLog').prepend('<div id="stats">Duration (s): ' + callDetails.duration + '</div>');
+                $('div#callLog').prepend('<div id="stats">End cause: ' + call.getEndCause() + '</div>');
+                $('#timer').html('00:00:00');
+                seconds = 0;
+                minutes = 0;
+                hours = 0;
+                if (call.error) {
+                    $('div#callLog').prepend('<div id="stats">Failure message: ' + call.error.message + '</div>');
+                    $('#errormessage').html(call.error.message);
+                    showUI(false);
+                }
+            }
+        };
+        $('button#call').click(function (event) {
+            event.preventDefault();
+            if ($('#userName').val() === "" || $('#pinCode').val() === "") {
+                $('#errormessage').html('you must enter a name and pincode that you recived in the email');
+                return;
+            }
+            $('#errormessage').html('');
+            $('audio#ringback').trigger("play");
+
+            showUI(true);
+            if (!started) {
+                $.getJSON("getTicket", { id: $('#userName').val() }, function (ticket) {
+                    sinchClient.start(ticket).then(
+                        function () {
+                            started = true;
+                            joinConference();
+                        });
+                });
+            } else {
+                joinConference();
+            }
+        });
+
+
+        function joinConference() {
+            $('div#callLog').prepend('<div id="title">Joining conference ' + $('#pinCode').val() + '</div>');
+            call = callClient.callConference($('#pinCode').val());
+            call.addEventListener(callListeners);
+        }
+
+        //mute
+        $('#mute').bind('click', function (event) {
+            if (muted) {
+
+                $('#micicon').removeClass();
+                $('#micicon').addClass('mdi-av-mic');
+                call.unmute();
+                muted = false;
+            } else {
+                $('#micicon').removeClass();
+                $('#micicon').addClass('mdi-av-mic-off');
+                call.mute();
+                muted = true;
+            }
+
+        });
+
+        /*** Hang up a call ***/
+        $('button#hangup').click(function (event) {
+            event.preventDefault();
+            $('audio#ringback').trigger("pause");
+            showUI(false);
+            if (call != null)
+                call.hangup();
+        });
+        var seconds = 0, minutes = 0, hours = 0, t;
+        $('#incall').hide();
+
+        function add() {
+            seconds++;
+            if (seconds >= 60) {
+                seconds = 0;
+                minutes++;
+                if (minutes >= 60) {
+                    minutes = 0;
+                    hours++;
+                }
+            }
+            var time = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+            $('#timer').html(time);
+            timer();
+        }
+
+        function timer() {
+            t = setTimeout(add, 1000);
+        }
+
+        function showUI(incall) {
+            if (incall) {
+                $("#newCall").hide();
+                $("#incall").show();
+                $('#bg').removeClass();
+                $('#bg').addClass('bg incallBg');
+            } else {
+                $("#newCall").show();
+                $("#incall").hide();
+                $('#bg').removeClass();
+                $('#bg').addClass('bg loginBg');
+
+            }
+        }
+        $('button').prop('disabled', false); //Solve Firefox issue, ensure buttons always clickable after load
+        
+    </script>
+
+}

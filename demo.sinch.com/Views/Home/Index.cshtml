@@ -1,0 +1,59 @@
+﻿@model List<demo.sinch.com.Models.Conference>
+@{
+    ViewBag.Title = "Sinch Conference Calling";
+    ViewBag.Description = "Try Sinch Conference Calling with our web app. Join a conference or call in from your own phone.";
+}
+
+<div id="startbg" class="bg">
+
+</div>
+
+
+
+<div class="col-wrap">
+    <div class="col-xs-12">
+        <h1 class="whiteheader">Welcome to the Sinch Demo Site!</h1>
+    </div>
+    <div class="col-md-4 col">
+        <div class="well ">
+            <div class="lead">Join a Conference</div>
+            <p>Did you receive a conference invite?</p>
+            <p>
+                @Html.ActionLink("Join here", "JoinConference", "Conference")
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4 col">
+        <div class="well ">
+            <div class="lead">Create a Conference</div>
+            <p>Join here
+            </p>
+            <p>
+                @Html.ActionLink("Create a conference", "Create", "Conference")
+            </p>
+        </div>
+    </div>
+    <div class="col-md-4 col">
+        <div class="well ">
+            <div class="lead">Download the Source Code</div>
+            <p>
+                Download the source code and deploy it to your own system or azure.
+            </p>
+            <p>
+                <a href="https://github.com/sinch/net-demo.sinch.com">Building your own conference system</a>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+@section scripts
+{
+    <style>
+
+
+        </style>
+}
+
+
+

@@ -1,0 +1,33 @@
+﻿@model List<demo.sinch.com.Models.Conference>
+
+@{
+    ViewBag.Title = "Conferences";
+}
+<div id="startbg" class="bg">
+
+</div>
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 well well-lg sinch-push-top">
+        <div class="lead">
+            My conferences
+        </div>
+
+        <div class="list-group">
+
+            @foreach (var conf in Model) {
+                <div class="list-group-item">
+                    <div class="row-content">
+                        <h4 class="list-group-item-heading">@Html.ActionLink(conf.ConferenceName, "Details", new { id = conf.ConferenceId }) </h4>
+                        <p class="list-group-item-text">
+                            @(conf.ValidForever ? "Valid forever" : conf.ConferenceEndDate.Date.ToString())<br />
+                            @conf.PinCode
+                        </p>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,114 @@
+﻿body {
+    background-color: #ededed;
+    min-height: 100%;
+}
+
+H1 {
+    margin-bottom: 25px;
+}
+
+.navbar-inverse.navbar {
+    /*background-color: #63029d;*/
+    background-color: transparent;
+}
+
+.bg {
+    background-repeat: no-repeat;
+    background-size: cover;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transition: background-image 0.5s ease-in-out;
+    z-index: -1000;
+}
+
+.loginBg {
+    background-image: url('/content/loginbg.jpg');
+}
+
+.incallBg {
+    background-image: url('/content/confbg.jpg');
+}
+
+#startbg {
+    background-image: url('/content/startbg.jpg');
+}
+
+.sinch-vertical-center {
+    -webkit-transform: translate(-50%, -50%);
+    left: 50%;
+    position: fixed;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.sinch-push-top {
+    margin-top: 100px;
+}
+
+.sinch-vertical {
+    top: 50%;
+    right: 5%;
+    left: 5%;
+    position: fixed;
+    transform: translate(0px, -50%);
+    -webkit-transform: translate(0%, -50%);
+}
+
+.well:before {
+    text-align: center;
+}
+
+.well, .well-lg, .well.well-lg {
+    padding-bottom: 25px;
+}
+
+.whiteheader {
+    text-shadow: 1px 1px black;
+    color: white;
+}
+
+input:-webkit-autofill {
+    background-color: white !important;
+}
+
+.navbar.navbar,
+.navbar-default.navbar {
+    text-shadow: 1px 1px black;
+}
+
+.radio-inline, .checkbox-inline {
+    padding-left: 0px;
+}
+
+.sinchpurple {
+    color: #63029d;
+}
+
+a, a:hover, a:focus {
+    color: #8235b1;
+}
+
+#newCall, #incall {
+    transition: visibility 0s, opacity 0.5s linear;
+}
+
+@media (min-width: 992px) {
+    .col-wrap {
+        overflow: hidden;
+    }
+
+
+    .col .well {
+        margin-top: 50px;
+        margin-bottom: -99975px;
+        padding-bottom: 99999px;
+    }
+
+    /* bottom row */
+    .col-base {
+        margin-top: -15px; /* cut off top portion of bottom wells */
+    }
+}
