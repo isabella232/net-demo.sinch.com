@@ -1,6 +1,6 @@
 # Building Your Own Conferencing System With ASP.NET MVC - Part 2: Adding A Web Client 
 
-In [part 1](README.md), we built the foundation for our conference calling system, and in this part of the tutorial, we will look at building a web based client to connect users to a conference. 
+In [part 1](https://www.sinch.com/tutorials/building-a-conferencing-system/), we built the foundation for our conference calling system, and in this part of the tutorial, we will look at building a web based client to connect users to a conference. 
 
 All of the source code is available on [GitHub here](https://github.com/sinch/net-demo.sinch.com). 
 
@@ -23,7 +23,7 @@ You can either deploy this project straight to Azure using the button below. It 
 
 Of *Controllers/CallbackController.cs*
 
-If you remember from part 1 we had the **Controllers/CallbackController.cs**, and on the **MXP** row we set the caller ID which connects to the conference.
+If you remember from part 1 we had the [**Controllers/CallbackController.cs**](https://www.sinch.com/tutorials/building-a-conferencing-system/#the parts of the conferencing calling system), and on the **MXP** row we set the caller ID which connects to the conference.
 
 ```csharp
 public async Task<SvamletModel> Post(CallbackEventModel model) {
@@ -611,4 +611,8 @@ The complete **JoinConference.cshml** looks like this.
 
 That's all. Now we have a fully working web client to work with our backend service to make conference calls.
 
+##More Resources
 
+If you liked this tutorial, you might also like the following:
+* [Building Your Own Conference Calling System (Part 1)](https://www.sinch.com/tutorials/building-a-conferencing-system/)
+* [Building a Conference Calling System in C# (a different version)](https://www.sinch.com/tutorials/build-conference-calling-system-c/)
