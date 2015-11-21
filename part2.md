@@ -10,7 +10,7 @@ The process for connecting to a web browser is a bit different since you don't n
 
 You can either deploy this project straight to Azure using the button below. It will set up a database and configure Sinch app keys and secrets for you. Or you can just fork it and deploy wherever you want. 
 
-[![Deploy to Azure](images/deploybutton.png)](https://azuredeploy.net/)
+[![Deploy to Azure](images/deploybutton.png)](https://azuredeploy.net/?repository=https://github.com/sinch/net-demo.sinch.com)
 
 ### Running on your own server
 
