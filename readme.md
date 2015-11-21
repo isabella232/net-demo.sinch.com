@@ -18,7 +18,7 @@ Sinch supports both regular phone calling and WebRTC calling for conferencing, a
 ## Using The System
 You can just deploy it to Azure using the deploy button below, and Azure will set up a database and configure Sinch app keys and secrets for you. Or you can just fork it and deploy the code wherever you want. 
 
-[![Deploy to Azure](images/deploybutton.png)](https://azuredeploy.net/?repository=https://github.com/sinch/net-demo.sinch.com.git)
+[![Deploy to Azure](images/deploybutton.png)](https://azuredeploy.net/?repository=https://github.com/sinch/net-demo.sinch.com)
 
 ### Running On Your Own Server
 To run your own server, you will need the following:
