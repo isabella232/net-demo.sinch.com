@@ -13,5 +13,9 @@ namespace demo.sinch.com.Controllers {
             //}
             return View();
         }
+        [Route("autotrader")]
+        public ActionResult AutoTrader() {
+            return View();
+        }
     }
 }

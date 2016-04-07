@@ -25,7 +25,7 @@ namespace demo.sinch.com.Controllers {
             appSecret = applicationSecret;
         }
 
-        [Route("~/Conference")]
+        [System.Web.Http.Route("~/Conference")]
         public ActionResult JoinConference(string id) {
             ViewBag.applicationKey = appKey;
             if (string.IsNullOrEmpty(id))
@@ -36,7 +36,7 @@ namespace demo.sinch.com.Controllers {
         }
 
         [Authorize]
-        [Route("~/Conference/Create")]
+        [System.Web.Http.Route("~/Conference/Create")]
         [System.Web.Mvc.HttpGet]
         public async Task<ActionResult> Create() {
             var model = new CreateConferenceModel();
@@ -62,7 +62,7 @@ namespace demo.sinch.com.Controllers {
         }
 
         [Authorize]
-        [Route("~/Conference/Create")]
+        [System.Web.Http.Route("~/Conference/Create")]
         [System.Web.Mvc.HttpPost]
         public async Task<ActionResult> Create(CreateConferenceModel model) {
             using (var db = new ConferenceContext())
@@ -79,7 +79,7 @@ namespace demo.sinch.com.Controllers {
         }
 
         [Authorize]
-        [Route("~/Conference/My")]
+        [System.Web.Http.Route("~/Conference/My")]
         public ActionResult MyConferences() {
             using (var db = new ConferenceContext())
             {
@@ -89,7 +89,7 @@ namespace demo.sinch.com.Controllers {
         }
 
         [Authorize]
-        [Route("~/Conference/{id}")]
+        [System.Web.Http.Route("~/Conference/{id}")]
         public async Task<ViewResult> Details(Guid id) {
             var model = new ConferenceDetailsViewModel();
             using (var db = new ConferenceContext())
@@ -118,7 +118,7 @@ namespace demo.sinch.com.Controllers {
             }
         }
 
-        [Route("~/Conference/delete/{id}")]
+        [System.Web.Http.Route("~/Conference/delete/{id}")]
         public async Task<RedirectToRouteResult> Delete(Guid id) {
             using (var db = new ConferenceContext())
             {
@@ -130,14 +130,17 @@ namespace demo.sinch.com.Controllers {
             return RedirectToAction("MyConferences");
         }
 
-        [Route("~/Conference/Callout")]
+        [System.Web.Http.Route("~/Conference/Callout")]
         public async Task<JsonResult> CallOut(string number, string conferenceId) {
             try
             {
+
+                
                 var factory = new WebApiClientFactory().CreateClient<ICalloutApiEndpoints>("https://api.sinch.com",
                     new ApplicationSigningFilter(appKey, Convert.FromBase64String(appSecret)), new RestReplyFilter());
+                
                 number = number.StartsWith("+") ? number.Trim() : "+" + number.Trim();
-                await factory.AddParticipant(new CalloutRequest
+                var result = await factory.AddParticipant(new CalloutRequest
                 {
                     method = "conferenceCallout",
                     conferenceCallout = new ConferenceCallout
@@ -146,9 +149,12 @@ namespace demo.sinch.com.Controllers {
                         destination = new Destination {endpoint = number, type = "number"},
                         domain = "pstn",
                         conferenceId = conferenceId,
-                        enableDice = true
+                        greeting ="Welcome to the conference",
+                        enableDice = true,
+                        enableAce=true,
                     }
                 });
+                Debug.WriteLine(result.callId);
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -174,7 +180,7 @@ namespace demo.sinch.com.Controllers {
             }
         }
 
-        [Route("~/GetTicket")]
+        [System.Web.Http.Route("~/GetTicket")]
         [System.Web.Mvc.HttpGet]
         public JsonResult GetTicket(string id) {
             var loginObject = new LoginObject(appKey, appSecret);

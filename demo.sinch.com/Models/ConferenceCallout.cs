@@ -1,13 +1,17 @@
 ﻿using System.Threading.Tasks;
+using Sinch.ServerSdk;
 using Sinch.ServerSdk.Messaging.Models;
 using Sinch.WebApiClient;
 
 namespace demo.sinch.com.Models {
     public interface ICalloutApiEndpoints {
         [HttpPost("calling/v1/callouts/")]
-        Task<SendSmsResponse> AddParticipant([ToBody] CalloutRequest request);
+        Task<CalloutResponse> AddParticipant([ToBody] CalloutRequest request);
     }
 
+    public class CalloutResponse {
+        public string callId { get; set; }
+    }
     public class Destination {
         public string type { get; set; }
         public string endpoint { get; set; }
@@ -22,10 +26,12 @@ namespace demo.sinch.com.Models {
         public string greeting { get; set; }
         public string conferenceId { get; set; }
         public bool enableDice { get; set; }
+        public bool enableAce { get; set; }
     }
 
     public class CalloutRequest {
         public string method { get; set; }
         public ConferenceCallout conferenceCallout { get; set; }
+                                 
     }
 }
